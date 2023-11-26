@@ -24,16 +24,22 @@ int main()
     }
     printf("Initialised.\n");
 
-     if ((server_socket = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET)
+    if ((server_socket = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET)
         {
             printf("Could not create socket: %d", WSAGetLastError());
-         }
+        }
     
    
     SOCKET server_socket;
   
     printf("Socket created.\n");
 
+    if(bind(server_socket, (sockaddr*)&server, sizeof(server)) == SOCKET_ERROR)
+        {
+            printf("Bind faild with erorr code: %d", WSAGetLastError());
+            exit(EXIT_FAILURE);
+        }
+        
    
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
