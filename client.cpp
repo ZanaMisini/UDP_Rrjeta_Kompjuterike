@@ -1,3 +1,4 @@
+//VJOSA
 // start communication
     while (true)
     {
