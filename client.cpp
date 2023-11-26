@@ -9,6 +9,10 @@ using namespace std;
 #define BUFLEN 512  // max length of answer
 #define PORT 8888  // the port on which to listen for incoming data
 
+    int main()
+    {
+    system("title UDP Client");
+
     WSADATA ws;
     printf("Initialising Winsock...");
     if (WSAStartup(MAKEWORD(2, 2), &ws) != 0)
@@ -26,10 +30,12 @@ using namespace std;
         return 2;
     }
 
+    memset((char*)&server, 0, sizeof(server));
+    server.sin_family = AF_INET;
+    server.sin_port = htons(PORT);
+    server.sin_addr.S_un.S_addr = inet_addr(SERVER);
 
-int main()
-{
-    system("title UDP Client");
+
 
 //VJOSA
 // start communication
