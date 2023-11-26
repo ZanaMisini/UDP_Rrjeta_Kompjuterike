@@ -37,6 +37,13 @@ int main()
  
     puts("Bind done.");
 
+    if(sendto(server_socket, message, strlen(message), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
+        {
+            printf("sendto() failed with error code: %d", WSAGetLastError());
+            return 3;
+        }
+                
+
     while (true)
     {
         printf("Waiting for data...");
