@@ -24,6 +24,11 @@ int main()
     }
     printf("Initialised.\n");
 
+     if ((server_socket = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET)
+        {
+            printf("Could not create socket: %d", WSAGetLastError());
+         }
+    
    
     SOCKET server_socket;
   
@@ -57,6 +62,7 @@ int main()
             printf("recvfrom() failed with error code: %d", WSAGetLastError());
             exit(0);
         }
+                
 
   
         printf("Received packet from %s:%d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
