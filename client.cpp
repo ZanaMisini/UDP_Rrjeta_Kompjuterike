@@ -18,6 +18,14 @@ using namespace std;
     }
     printf("Initialised.\n");
 
+    sockaddr_in server;
+    int client_socket;
+    if ((client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR) // <<< UDP socket
+    {
+        printf("socket() failed with error code: %d", WSAGetLastError());
+        return 2;
+    }
+
 
 int main()
 {
