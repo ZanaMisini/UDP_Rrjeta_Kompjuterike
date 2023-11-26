@@ -9,6 +9,15 @@ using namespace std;
 #define BUFLEN 512  // max length of answer
 #define PORT 8888  // the port on which to listen for incoming data
 
+    WSADATA ws;
+    printf("Initialising Winsock...");
+    if (WSAStartup(MAKEWORD(2, 2), &ws) != 0)
+    {
+        printf("Failed. Error Code: %d", WSAGetLastError());
+        return 1;
+    }
+    printf("Initialised.\n");
+
 
 int main()
 {
