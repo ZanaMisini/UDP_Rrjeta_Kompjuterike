@@ -53,7 +53,40 @@ int main()
             printf("sendto() failed with error code: %d", WSAGetLastError());
             return 3;
         }
+
+     if (strncmp(message, "file r: ", 8) == 0)
+        {
+            
+            string filename = message + 8;
+
+           
+            ifstream file(filename, ios::binary);
+            if (!file.is_open())
+            {
+                cout << "Error opening file: " << filename << endl;
+
                 
+                string errorMsg = "Error opening file: " + filename;
+                if (sendto(server_socket, errorMsg.c_str(), errorMsg.size(), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+                continue; 
+            }
+
+            
+            string fileContent((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+            file.close();
+
+            
+            if (sendto(server_socket, fileContent.c_str(), fileContent.size(), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
+            {
+                printf("sendto() failed with error code: %d", WSAGetLastError());
+                return 3;
+            }
+        }
+
 
     while (true)
     {
@@ -101,6 +134,7 @@ int main()
 
      
     }
+    
 
     closesocket(server_socket);
     WSACleanup();
