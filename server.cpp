@@ -125,6 +125,17 @@ int main()
                     allowedWriteClients.insert(clientKey); // Mark that this client is allowed to write
                 }
             }
+
+            else
+            {
+                string errorMsg = "Write operation not allowed for this client";
+                if (sendto(server_socket, errorMsg.c_str(), errorMsg.size(), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+            }
+        }
         
 
   
