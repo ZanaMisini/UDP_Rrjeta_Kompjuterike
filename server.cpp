@@ -136,11 +136,6 @@ int main()
      
     }
 
-    if (sendto(server_socket, fileContent.c_str(), fileContent.size(), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
-            {
-                printf("sendto() failed with error code: %d", WSAGetLastError());
-                return 3;
-            }
     
 
     closesocket(server_socket);
