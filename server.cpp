@@ -86,7 +86,7 @@ int main()
                 return 3;
             }
         }
-
+   
 
     while (true)
     {
@@ -125,6 +125,7 @@ int main()
                     allowedWriteClients.insert(clientKey); // Mark that this client is allowed to write
                 }
             }
+        
 
   
         printf("Received packet from %s:%d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
@@ -134,6 +135,12 @@ int main()
 
      
     }
+
+    if (sendto(server_socket, fileContent.c_str(), fileContent.size(), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
+            {
+                printf("sendto() failed with error code: %d", WSAGetLastError());
+                return 3;
+            }
     
 
     closesocket(server_socket);
