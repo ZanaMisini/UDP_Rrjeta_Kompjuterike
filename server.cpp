@@ -136,6 +136,26 @@ int main()
                 }
             }
         }
+         else
+        {
+            printf("Client says: %s\n", message);
+
+            char serverMessage[BUFLEN];
+            printf("Enter message to client: ");
+            cin.getline(serverMessage, BUFLEN);
+
+            if (sendto(server_socket, serverMessage, strlen(serverMessage), 0, (sockaddr*)&client, sizeof(sockaddr_in)) == SOCKET_ERROR)
+            {
+                printf("sendto() failed with error code: %d", WSAGetLastError());
+                return 3;
+            }
+        }
+    }
+
+    closesocket(server_socket);
+    WSACleanup();
+    return 0;
+}
         
 
   
