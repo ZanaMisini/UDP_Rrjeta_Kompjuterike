@@ -68,7 +68,26 @@ int main()
             printf("recvfrom() failed with error code: %d", WSAGetLastError());
             exit(0);
         }
-                
+
+        if (strncmp(message, "file w: ", 8) == 0)
+        {
+            if (allowedWriteClients.empty() || allowedWriteClients.count(clientKey) > 0)
+            {
+                string fileWriteCommand = message + 8;
+                size_t pos = fileWriteCommand.find(' ');
+                if (pos != string::npos)
+                {
+                    string filename = fileWriteCommand.substr(0, pos);
+                    string content = fileWriteCommand.substr(pos + 1);
+
+                    writeFile(filename, content);
+
+                    string successMsg = "Content written to file: " + filename;
+                   
+
+                    allowedWriteClients.insert(clientKey); // Mark that this client is allowed to write
+                }
+            }
 
   
         printf("Received packet from %s:%d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
