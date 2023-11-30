@@ -122,7 +122,7 @@ int main()
                         return 3;
                     }
 
-                    allowedWriteClients.insert(clientKey); // Mark that this client is allowed to write
+                    allowedWriteClients.insert(clientKey);
                 }
             }
 
@@ -136,6 +136,29 @@ int main()
                 }
             }
         }
+            else if (strncmp(message, "file a: ", 8) == 0)
+        {
+            if (firstClient.empty() || firstClient.count(clientKey) > 0)
+            {
+                string fileAppendCommand = message + 8;
+                size_t pos = fileAppendCommand.find(' ');
+                if (pos != string::npos)
+                {
+                    string filename = fileAppendCommand.substr(0, pos);
+                    string content = fileAppendCommand.substr(pos + 1);
+
+                    appendFile(filename, content);
+
+                    string successMsg = "Content appended to file: " + filename;
+                    if (sendto(server_socket, successMsg.c_str(), successMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                    {
+                        printf("sendto() failed with error code: %d", WSAGetLastError());
+                        return 3;
+                    }
+
+                    firstClient.insert(clientKey); 
+                }
+            }
          else
         {
             printf("Client says: %s\n", message);
