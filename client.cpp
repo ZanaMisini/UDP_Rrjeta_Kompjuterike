@@ -40,7 +40,6 @@ using namespace std;
         char message[BUFLEN];
         printf("Enter message: ");
         cin.getline(message, BUFLEN);
-// Send the message to the server
         if (sendto(client_socket, message, strlen(message), 0, (sockaddr*)&server, sizeof(sockaddr_in)) == SOCKET_ERROR)
         {
             printf("sendto() failed with error code: %d", WSAGetLastError());
