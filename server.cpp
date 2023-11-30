@@ -2,6 +2,34 @@
 #include <winsock2.h>
 using namespace std;
 
+void writeFile(const string& filename, const string& content)
+{
+    ofstream file(filename, ios::out | ios::binary);
+    if (file.is_open())
+    {
+        file << content;
+        file.close();
+    }
+    else
+    {
+        cout << "Error opening file: " << filename << endl;
+    }
+}
+
+void appendFile(const string& filename, const string& content)
+{
+    ofstream file(filename, ios::out | ios::app | ios::binary);
+    if (file.is_open())
+    {
+        file << content;
+        file.close();
+    }
+    else
+    {
+        cout << "Error opening file: " << filename << endl;
+    }
+}
+
 #pragma comment(lib,"ws2_32.lib") // Winsock Library
 #pragma warning(disable:4996) 
 
