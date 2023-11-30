@@ -50,3 +50,19 @@ using namespace std;
             printf("sendto() failed with error code: %d", WSAGetLastError());
             return 3;
         }
+ // Receive and print the server's response
+        char answer[BUFLEN] = {};
+        int slen = sizeof(sockaddr_in);
+        int answer_length;
+        if (answer_length = recvfrom(client_socket, answer, BUFLEN, 0, (sockaddr*)&server, &slen) == SOCKET_ERROR)
+        {
+            printf("recvfrom() failed with error code: %d", WSAGetLastError());
+            exit(0);
+        }
+
+        cout << "Server says: " << answer << "\n";
+    }
+
+    closesocket(client_socket);
+    WSACleanup();
+}
