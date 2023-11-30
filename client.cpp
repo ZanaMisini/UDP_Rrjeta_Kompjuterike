@@ -35,10 +35,6 @@ using namespace std;
     server.sin_port = htons(PORT);
     server.sin_addr.S_un.S_addr = inet_addr(SERVER);
 
-
-
-//VJOSA
-// start communication
     while (true)
     {
         char message[BUFLEN];
