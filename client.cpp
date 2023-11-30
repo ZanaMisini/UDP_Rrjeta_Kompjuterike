@@ -46,7 +46,6 @@ using namespace std;
             printf("sendto() failed with error code: %d", WSAGetLastError());
             return 3;
         }
- // Receive and print the server's response
         char answer[BUFLEN] = {};
         int slen = sizeof(sockaddr_in);
         int answer_length;
