@@ -50,7 +50,17 @@ int main()
             printf("sendto() failed with error code: %d", WSAGetLastError());
             return 1;
         }
+        // Marrim dhe paraqesim pergjigjjen e serverit
+        char serverResponse[BUFLEN];
+        int serverResponseLength = recvfrom(client_socket, serverResponse, BUFLEN, 0, NULL, NULL);
+        if (serverResponseLength == SOCKET_ERROR)
+        {
+            printf("recvfrom() failed with error code: %d", WSAGetLastError());
+            return 1;
+        }
 
+        serverResponse[serverResponseLength] = '\0';
+        printf("Server says: %s\n", serverResponse);
 
     }
 
