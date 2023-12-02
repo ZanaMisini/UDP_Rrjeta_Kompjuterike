@@ -310,15 +310,15 @@ else if (strncmp(message, "file w: ", 8) == 0)
         }
       else
         {
-            // Printojme te dhenat e marra
+            // Printimi i te dhenave
             printf("Client says: %s\n", message);
 
-            // Serveri shkruan nje mesazh
+            // Serveri shkruan mesazhin
             char serverMessage[BUFLEN];
             printf("Enter message to client: ");
             cin.getline(serverMessage, BUFLEN);
 
-            // Dergojme mesazhin klientit
+            // Dergimi i mesazhit tek klienti
             if (sendto(server_socket, serverMessage, strlen(serverMessage), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
             {
                 printf("sendto() failed with error code: %d", WSAGetLastError());
