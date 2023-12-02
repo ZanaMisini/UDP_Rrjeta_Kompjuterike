@@ -308,7 +308,7 @@ else if (strncmp(message, "file w: ", 8) == 0)
                 }
             }
         }
-        else
+      else
         {
             // Printojme te dhenat e marra
             printf("Client says: %s\n", message);
