@@ -102,3 +102,99 @@ int main()
         printf("Received packet from %s:%d\n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
 
         string clientKey = string(inet_ntoa(clientAddr.sin_addr)) + ":" + to_string(ntohs(clientAddr.sin_port));
+
+       // Nqs klienti ka shkruar komanden "execute"
+        if (strcmp(message, "execute") == 0)
+        {
+            if (firstClient.empty() || firstClient.count(clientKey) > 0) {
+
+                // Gjenerimi i nje numri te rastesishem 1-100
+                int magicNumber = rand() % 100 + 1;
+
+                // Informojme klientin qe numri eshte gjeneruar
+                string response = "Magic number generated. Try to guess! You have 5 guesses";
+                if (sendto(server_socket, response.c_str(), response.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+
+                int i = 5;
+                // Klienti ka 5 mundesi per t'ia qelluar numrit te sakte
+                while (i > 0)
+                {
+                    i--;
+                    // Marrim pergjigjjen e klientit
+                    char guessMessage[BUFLEN];
+                    int guessMessageLength = recvfrom(server_socket, guessMessage, BUFLEN, 0, (sockaddr*)&clientAddr, &slen);
+                    if (guessMessageLength == SOCKET_ERROR)
+                    {
+                        printf("recvfrom() failed with error code: %d", WSAGetLastError());
+                        exit(0);
+                    }
+
+                    guessMessage[guessMessageLength] = '\0';
+
+                    // Kthejme pergjigjjen ne integjer
+                    int clientGuess = atoi(guessMessage);
+
+                    // Nqs i'a ka qelluar numrit
+                    if (clientGuess == magicNumber)
+                    {
+                       
+                        string successMessage = "Congratulations! You guessed the magic number!";
+                        if (sendto(server_socket, successMessage.c_str(), successMessage.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                        {
+                            printf("sendto() failed with error code: %d", WSAGetLastError());
+                            return 3;
+                        }
+
+                        printf("Client guessed the correct number!\n");
+                        break; 
+                    }
+                    else if (clientGuess > magicNumber && i != 0)
+                    {
+                        // Nqs numri eshte me i vogel
+                        string errorMessage = "The magic number is smaller! Your tries: " + to_string(i);
+                        if (sendto(server_socket, errorMessage.c_str(), errorMessage.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                        {
+                            printf("sendto() failed with error code: %d", WSAGetLastError());
+                            return 3;
+                        }
+                    }
+                    else if (clientGuess < magicNumber && i != 0)
+                    {
+                        // Nqs numri eshte me i madh
+                        string errorMessage = "The magic number is bigger! Your tries: " + to_string(i);
+                        if (sendto(server_socket, errorMessage.c_str(), errorMessage.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                        {
+                            printf("sendto() failed with error code: %d", WSAGetLastError());
+                            return 3;
+                        }
+                    }
+                    // Nqs klienti ka harxhuar te gjitha mundesite
+                    if (i == 0)
+                    {
+                        string errorMessage = "You lost the game! The magic number was: " + to_string(magicNumber);
+                        if (sendto(server_socket, errorMessage.c_str(), errorMessage.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                        {
+                            printf("sendto() failed with error code: %d", WSAGetLastError());
+                            return 3;
+                        }
+
+                        printf("Client didn't guess the correct number\n");
+                    }
+                }
+                firstClient.insert(clientKey); // Ky klient ka te drejte per execute
+
+            }
+            else {
+                // Dergojme mesazh errori klientit se ai nuk eshte i pari dhe nuk ka te drejta per execute
+                string errorMsg = "Magic Number Game not allowed for this client";
+                if (sendto(server_socket, errorMsg.c_str(), errorMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+            }
+        }
