@@ -50,7 +50,7 @@ using namespace std;
         int answer_length;
         if (answer_length = recvfrom(client_socket, answer, BUFLEN, 0, (sockaddr*)&server, &slen) == SOCKET_ERROR)
         {
-            printf("recvfrom() failed with error code: %d", WSAGetLastError());
+            printf("recvfrom() failed with error code: %d", WSAGetLastError()) ;
             exit(0);
         }
 
