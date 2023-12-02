@@ -28,7 +28,7 @@ int main()
     }
     printf("Socket created.\n");
 
-    // Set up serverin me te dhenat e tij
+    // Shkruajme te dhenat e serverit, per tu lidhur me te
     sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(PORT);
@@ -53,6 +53,7 @@ int main()
         // Marrim dhe paraqesim pergjigjjen e serverit
         char serverResponse[BUFLEN];
         int serverResponseLength = recvfrom(client_socket, serverResponse, BUFLEN, 0, NULL, NULL);
+        //Shfaqim error ne qofte se nuk mund te marrim pergjigjen e serverit
         if (serverResponseLength == SOCKET_ERROR)
         {
             printf("recvfrom() failed with error code: %d", WSAGetLastError());
@@ -63,7 +64,7 @@ int main()
         printf("Server says: %s\n", serverResponse);
 
     }
-
+    //Mbyllim socket-in
     closesocket(client_socket);
     WSACleanup();
     return 0;
