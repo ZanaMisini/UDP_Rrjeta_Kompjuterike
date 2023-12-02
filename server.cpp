@@ -271,3 +271,64 @@ int main()
                 }
             }
         }
+else if (strncmp(message, "file w: ", 8) == 0)
+        {
+            if (firstClient.empty() || firstClient.count(clientKey) > 0)
+            {
+                // Marrim emrin e file dhe permbajtjen nga mesazhi
+                string fileWriteCommand = message + 8;
+                size_t pos = fileWriteCommand.find(' ');
+                if (pos != string::npos)
+                {
+                    string filename = fileWriteCommand.substr(0, pos);
+                    string content = fileWriteCommand.substr(pos + 1);
+
+                    // Shkruajme permbajtjen ne file
+                    writeFile(filename, content);
+
+                    // Dergojme mesazh qe permbajtja eshte shkruar me sukses
+                    string successMsg = "Content written to file: " + filename;
+                    if (sendto(server_socket, successMsg.c_str(), successMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                    {
+                        printf("sendto() failed with error code: %d", WSAGetLastError());
+                        return 3;
+                    }
+
+                    firstClient.insert(clientKey); // Ky klient ka te drejta per w
+                }
+            }
+            else
+            {
+                // Dergojme error mesazh klienteve te cilet nuk jane te paret, se nuk kane te drejta per write
+                string errorMsg = "Write operation not allowed for this client";
+                if (sendto(server_socket, errorMsg.c_str(), errorMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+            }
+        }
+        else
+        {
+            // Printojme te dhenat e marra
+            printf("Client says: %s\n", message);
+
+            // Serveri shkruan nje mesazh
+            char serverMessage[BUFLEN];
+            printf("Enter message to client: ");
+            cin.getline(serverMessage, BUFLEN);
+
+            // Dergojme mesazhin klientit
+            if (sendto(server_socket, serverMessage, strlen(serverMessage), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+            {
+                printf("sendto() failed with error code: %d", WSAGetLastError());
+                return 3;
+            }
+        }
+    }
+
+    closesocket(server_socket);
+    WSACleanup();
+    return 0;
+}
+
