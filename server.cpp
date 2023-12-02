@@ -198,3 +198,38 @@ int main()
                 }
             }
         }
+
+ // Nqs komanda eshte per te lexuar nje file
+        else if (strncmp(message, "file r: ", 8) == 0)
+        {
+            // Marrim emrin e file
+            string filename = message + 8;
+
+            // Hapja e file
+            ifstream file(filename, ios::binary);
+            if (!file.is_open())
+            {
+                cout << "Error opening file: " << filename << endl;
+
+                // Nqs ka ndodhur ndonje gabim gjate hapjes se file
+                string errorMsg = "Error opening file: " + filename;
+                if (sendto(server_socket, errorMsg.c_str(), errorMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+
+                continue; 
+            }
+
+            // Lexojme permbajtjen nga file
+            string fileContent((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+            file.close();
+
+            // Dergojme file klientit
+            if (sendto(server_socket, fileContent.c_str(), fileContent.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+            {
+                printf("sendto() failed with error code: %d", WSAGetLastError());
+                return 3;
+            }
+        }
