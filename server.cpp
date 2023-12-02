@@ -233,3 +233,41 @@ int main()
                 return 3;
             }
         }
+// Nqs mesazhi eshte per te shtuar ne file
+        else if (strncmp(message, "file a: ", 8) == 0)
+        {
+            if (firstClient.empty() || firstClient.count(clientKey) > 0)
+            {
+                // Marrim emrin e file dhe permbajtjen nga mesazhi
+                string fileAppendCommand = message + 8;
+                size_t pos = fileAppendCommand.find(' ');
+                if (pos != string::npos)
+                {
+                    string filename = fileAppendCommand.substr(0, pos);
+                    string content = fileAppendCommand.substr(pos + 1);
+
+                    // Shtojme permbajtjen ne file
+                    appendFile(filename, content);
+
+                    // Nqs permbajtja eshte shtuar me sukses
+                    string successMsg = "Content appended to file: " + filename;
+                    if (sendto(server_socket, successMsg.c_str(), successMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                    {
+                        printf("sendto() failed with error code: %d", WSAGetLastError());
+                        return 3;
+                    }
+
+                    firstClient.insert(clientKey); // Ky klient ka te drejte per append
+                }
+            }
+            else
+            {
+                // Dergojme error mesazh klienteve te cilet nuk jane te paret, se nuk kane te drejta per append
+                string errorMsg = "Append operation not allowed for this client";
+                if (sendto(server_socket, errorMsg.c_str(), errorMsg.size(), 0, (sockaddr*)&clientAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
+                {
+                    printf("sendto() failed with error code: %d", WSAGetLastError());
+                    return 3;
+                }
+            }
+        }
